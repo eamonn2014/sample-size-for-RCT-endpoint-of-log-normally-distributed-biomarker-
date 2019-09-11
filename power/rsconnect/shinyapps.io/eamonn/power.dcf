@@ -1,0 +1,12 @@
+name: power
+title: power
+username:
+account: eamonn
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1181892
+bundleId: 2407534
+url: https://eamonn.shinyapps.io/power/
+when: 1568238812.29213
+asMultiple: FALSE
+asStatic: FALSE
