@@ -30,7 +30,7 @@ ui <- fluidPage(
   
   br(),
   actionButton(inputId='ab1', label="R code",   icon = icon("th"), 
-    onclick ="window.open('https://raw.githubusercontent.com/eamonn2014/sample-size-for-RCT-endpoint-of-log-normally-distributed-biomarker-/master/power/app.R', '_blank')"),   
+               onclick ="window.open('https://raw.githubusercontent.com/eamonn2014/sample-size-for-RCT-endpoint-of-log-normally-distributed-biomarker-/master/power/app.R', '_blank')"),   
   actionButton("resample", "Simulate a new sample"),
   br(),
   # br(),
@@ -63,16 +63,16 @@ ui <- fluidPage(
       
       sliderInput("b",
                   "Significance level",
-                  min=0, max=.5, step=.01, value=0.05, ticks=FALSE),
+                  min=0, max=.1, step=.001, value=0.05, ticks=FALSE),
       sliderInput("c",
                   "power",
                   min=0, max=1, step=.01, value=.85, ticks=FALSE),
       sliderInput("d",
                   "Patients in one arm",
-                  min=0, max=10000, step=1, value=261, ticks=FALSE),
+                  min=0, max=1000, step=1, value=300, ticks=FALSE),
       sliderInput("e",
                   "expected missing/non evaluable",
-                  min=0, max=.9, step=.01, value=0, ticks=FALSE)
+                  min=0, max=.9, step=.01, value=.20, ticks=FALSE)
       
       
       
@@ -277,7 +277,7 @@ server <- shinyServer(function(input, output) {
     
     delta =log(input$z)
     
-    N1 <- N2 <- floor(N*(1-input$e/2))
+    N1 <- N2 <- floor(N*(1-input$e/1))  # correct this, initially I divided by 2 - I am not sure why?
     
     sims <- 9999
     
