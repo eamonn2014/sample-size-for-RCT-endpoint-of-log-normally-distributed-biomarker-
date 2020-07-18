@@ -1,8 +1,8 @@
 library(shiny)
 library(RColorBrewer)
 library(shinythemes)
-
-
+library(shinyWidgets)
+ 
 fig.width <- 900
 fig.height <- 950
 text1  <- "blah blah"
@@ -16,7 +16,11 @@ p0 <- function(x) {formatC(x, format="f", digits=0)}
 
 
 ui <- fluidPage(
-  
+  setBackgroundColor(
+    color = c( "#2171B5", "#F7FBFF"), 
+    gradient = "linear",
+    direction = "bottom"
+  ),
   # App title ----
   titlePanel("Sample size/power for an RCT based on a continuous biomarker endpoint that is log-normal distributed"),
   
@@ -29,10 +33,30 @@ ui <- fluidPage(
   
   
   br(),
-  actionButton(inputId='ab1', label="R code",   icon = icon("th"), 
+  # actionButton(inputId='ab1', label="R code",   icon = icon("th"), 
+  #              onclick ="window.open('https://raw.githubusercontent.com/eamonn2014/sample-size-for-RCT-endpoint-of-log-normally-distributed-biomarker-/master/power/app.R', '_blank')"),   
+  # actionButton("resample", "Simulate a new sample"),
+  # br(),
+  
+  
+  tags$style(type="text/css", ".span8 .well { background-color: #00BFFF; }"),
+  
+  
+  actionButton(inputId='ab1', label="Rshiny code",   icon = icon("th"),   
                onclick ="window.open('https://raw.githubusercontent.com/eamonn2014/sample-size-for-RCT-endpoint-of-log-normally-distributed-biomarker-/master/power/app.R', '_blank')"),   
-  actionButton("resample", "Simulate a new sample"),
-  br(),
+  actionButton("resample", "Hit to simulate a new sample"),
+  br(),  
+  tags$style(".well {background-color:#A9A9A9 ;}"), ##ABB0B4AF
+  
+  tags$head(
+    tags$style(HTML('#ab1{background-color:orange}'))
+  ),
+  
+  tags$head(
+    tags$style(HTML('#resample{background-color:orange}'))
+  ),
+  
+  
   # br(),
   # actionButton(inputId='ab1', label="R code here", 
   #              icon = icon("th"), 
@@ -84,11 +108,32 @@ ui <- fluidPage(
     # Main panel for displaying outputs ----
     mainPanel(
       
+      
+      # navbarPage(       
+        #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  
+        # tags$style(HTML("
+        #                     .navbar-default .navbar-brand {color: orange;}
+        #                     .navbar-default .navbar-brand:hover {color: blue;}
+        #                     .navbar { background-color: #b6aebd;}
+        #                     .navbar-default .navbar-nav > li > a {color:black;}
+        #                     .navbar-default .navbar-nav > .active > a,
+        #                     .navbar-default .navbar-nav > .active > a:focus,
+        #                     .navbar-default .navbar-nav > .active > a:hover {color: pink;background-color: purple;}
+        #                     .navbar-default .navbar-nav > li > a:hover {color: black;background-color:yellow;text-decoration:underline;}
+        #                     .navbar-default .navbar-nav > li > a[data-value='t1'] {color: red;background-color: pink;}
+        #                     .navbar-default .navbar-nav > li > a[data-value='t2'] {color: blue;background-color: lightblue;}
+        #                     .navbar-default .navbar-nav > li > a[data-value='t3'] {color: green;background-color: lightgreen;}
+        #            ")),
+      
+      
       # Output: Tabset w/ plot, summary, and table ----
       tabsetPanel(type = "tabs",
                   
+                 
+      
                   
-                  tabPanel("Plot", value=5, h3("Treatment effect"),
+                  tabPanel(div(h4(tags$span(style="color:black", "Plot"))),  h3("Treatment effect"),
+       
                            p('On the top left, we have a histogram of the null distribution of the biomarker with N equal to the'
                              , strong('Patients in one arm') ,'Top right we have the biomarker treatment distribution, 
                            a proportional difference.
@@ -97,14 +142,13 @@ ui <- fluidPage(
                              Here the treatment effect is a difference log(delta). Density curves from the distributions are superimposed.
                               The geometric mean is simply computing the arithmetic mean of the logarithm-transformed values and then using
                               the exponentiation to return the computation to the original scale.
-                           Click the ',strong('Simulate a new sample'),' button for another repeat of the experiment.'),
+                           Hit the ',strong('Simulate a new sample'),' button for another repeat of the experiment.'),
                            br(),plotOutput("plot")#,     
                           
                   ),
                
-                  
-                  tabPanel("Sample size for a t test", value=5, h3("Sample Size for a two-sample t-test"),
-                           p('The goal of this analysis is to estimate the sample size for a test intended to
+                  tabPanel(div(h4(tags$span(style="color:black", "Sample size for a t test"))),   h3("Sample Size for a two-sample t-test"),
+                                          p('The goal of this analysis is to estimate the sample size for a test intended to
                       determine if there is a difference in the outcome of interest. The computations are based on a ',strong('t-test') ,' for two independent 
                       countinuous populations and are performed for a two-sided hypothesis test.'),
                            br(),
@@ -126,9 +170,9 @@ ui <- fluidPage(
                            verbatimTextOutput("summary")),
                   
                   
-                  
-                  
-                  tabPanel("Power simulation", value=3, h3("Power using simulation"),
+                   
+                           tabPanel(div(h4(tags$span(style="color:black", "Power using simulation"))),  h3("Power using simulation"),
+                                    
                            p('Look left at the true population parameters, 
                                    the ',strong('SD') ,'below is the Normal distribution SD and follows 
                                    from the ',strong('log-normal standard deviation,'), 'the', strong('Mean') ,'is 
@@ -143,17 +187,17 @@ ui <- fluidPage(
                            
                            tableOutput("table")),
                   
-                  tabPanel("Log-normal and Normal dist.", value=3, 
+                   
+                           tabPanel(div(h4(tags$span(style="color:black", "Log-normal and Normal dist."))),
                            h3("Demonstrating successful transformation between Normal and log-normal"),
                            p('Using the mean and standard deviation on the Normal scale in the rlnorm function we simulate values a large number of times. The second plot is simulated using the rnorm function and then exponentiating. 
                              They are identical as expected.  Click the  ',strong('Simulate a new sample'),' button for another repeat of the experiment.'),
                            br(),plotOutput("plot2")),   
                   
-                  
-                  
-                  
-                  tabPanel("Notes", value=3, #h3("Some notes and a further reference"),
-                           p('Formulae to swap back and forth between the log-normal and the normal distribution'),
+              
+                           tabPanel(div(h4(tags$span(style="color:black", "Notes"))),
+                           
+                           h3('Formulae to swap back and forth between the log-normal and the normal distribution'),
                            br(),
                            
                            withMathJax(
@@ -197,6 +241,7 @@ ui <- fluidPage(
     )
   )
 )
+
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
